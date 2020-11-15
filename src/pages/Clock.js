@@ -22,8 +22,6 @@ export default class Clock extends Component {
         isOnline: false
       }
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
 
@@ -121,33 +119,7 @@ export default class Clock extends Component {
     this.expected += this.interval;
     this.timer = setTimeout(this.updateTimer, Math.max(0, this.interval - dt)); // take into account drift
   }
-
-
-
-  handleChange(event) {
-    this.setState({
-      content: event.target.value
-    });
-  }
-
-  async handleSubmit(event) {
-    event.preventDefault();
-    this.setState({ writeError: null });
-    try {
-      await db.ref("chats").push({
-        content: this.state.content,
-        timestamp: Date.now(),
-        uid: this.state.user.uid
-      }).then(function (docRef) {
-        console.log("Document written with ID: ", docRef.id)
-      });
-      this.setState({ content: '' });
-    } catch (error) {
-      this.setState({ writeError: error.message });
-    }
-  }
-
-
+  
   render() {
     return (
       <>

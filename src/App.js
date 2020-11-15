@@ -60,18 +60,22 @@ class App extends Component {
           if (snapshot.val() == false) {
             return;
           };
-
+          let timeNow = + Date.now();
           try {
             userStatusDatabaseRef.once('value', snapshot => {
               let lastStatus = snapshot.val() || { total_time: 0,
-                last_leave: + Date.now(),
-                last_entry: + Date.now(),
-                last_changed: + Date.now() };
+                last_leave: timeNow,
+                last_entry: timeNow,
+                last_changed: timeNow,
+                isOnline: false };
               console.log("Got Last status ", lastStatus);
+              if (lastStatus.isOnline) {
+                return;
+              }
               let isOfflineForDatabase = {
                 isOnline: false,
                 last_changed: firebase.database.ServerValue.TIMESTAMP,
-                total_time: (lastStatus.total_time || 0) + lastStatus.last_leave - lastStatus.last_entry,
+                total_time: lastStatus.total_time + lastStatus.last_leave - lastStatus.last_entry,
                 last_entry: + Date.now(),
                 last_leave: firebase.database.ServerValue.TIMESTAMP,
               };
