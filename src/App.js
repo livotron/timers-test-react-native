@@ -15,8 +15,9 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
-import { auth, db } from './services/firebase'
-import { PublicRoute, PrivateRoute } from './services/auth'
+import { auth, db } from './services/firebase';
+import firebase from 'firebase';
+import { PublicRoute, PrivateRoute } from './services/auth';
 import {
   Route,
   NativeRouter as Router,
@@ -24,17 +25,10 @@ import {
   Redirect,
 } from "react-router-native";
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
 import Clock from './pages/Clock';
 import Login from './pages/Login.js';
 import Signup from './pages/Signup';
+import Header from './pages/Header'
 import { createBrowserHistory } from "history";
 
 class App extends Component {
@@ -69,17 +63,20 @@ class App extends Component {
 
           try {
             userStatusDatabaseRef.once('value', snapshot => {
-              let lastStatus = snapshot.val() || { total_time: 0, last_leave: + Date.now(), last_entry: + Date.now() };
+              let lastStatus = snapshot.val() || { total_time: 0,
+                last_leave: + Date.now(),
+                last_entry: + Date.now(),
+                last_changed: + Date.now() };
               console.log("Got Last status ", lastStatus);
               let isOfflineForDatabase = {
-                state: 'offline',
+                isOnline: false,
                 last_changed: firebase.database.ServerValue.TIMESTAMP,
                 total_time: (lastStatus.total_time || 0) + lastStatus.last_leave - lastStatus.last_entry,
                 last_entry: + Date.now(),
                 last_leave: firebase.database.ServerValue.TIMESTAMP,
               };
               let isOnlineForDatabase = {
-                state: 'online',
+                isOnline: true,
                 last_changed: firebase.database.ServerValue.TIMESTAMP,
                 total_time: (lastStatus.total_time || 0) + lastStatus.last_leave - lastStatus.last_entry,
                 last_entry: + Date.now(),
@@ -110,6 +107,7 @@ class App extends Component {
   render() {
     return (
       <>
+        <Header></Header>
         {/* <StatusBar barStyle="dark-content" /> */}
         {this.state.loading === true ? <Text>Loading...</Text> :
           <Router>

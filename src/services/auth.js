@@ -6,6 +6,7 @@ export function signup(email, password) {
 }
 
 export function signin(email, password) {
+  console.log("hre")
     return auth().signInWithEmailAndPassword(email,password);
 }
 

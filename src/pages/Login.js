@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Text from 'react-native';
-import { Link } from "react-router-dom";
+import { View, Text, TextInput, Button } from 'react-native';
+import { Link } from "react-router-native";
 import { signin, signInWithGoogle, signInWithGitHub } from "../services/auth";
 // import style from './Login.module.scss'
 export default class Login extends Component {
@@ -11,21 +11,31 @@ export default class Login extends Component {
       email: "",
       password: ""
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleEmailChange(inputValue) {
     this.setState({
-      [event.target.name]: event.target.value
+      email: inputValue
+    });
+  }
+
+  handlePasswordChange(inputValue) {
+    this.setState({
+      password: inputValue
     });
   }
 
   async handleSubmit(event) {
-    event.preventDefault();
+    console.log('submitting')
+    // event.preventDefault();
     this.setState({ error: "" });
     try {
-      await signin(this.state.email, this.state.password);
+      console.log("tray to sign", this.state.email, this.state.password)
+
+      await signin(this.state.email, this.state.password).then(res => console.log(res))
+      console.log("tray to sign")
     } catch (error) {
       this.setState({ error: error.message });
     }
@@ -33,9 +43,25 @@ export default class Login extends Component {
 
   render() {
     return (
-      <>
-       <Text>Login</Text>
-      </>
+      <View>
+        <Text>Login</Text>
+        <TextInput
+          style={{ height: 80, borderColor: 'gray', borderWidth: 1, padding: 0 }}
+          onChangeText={(i) => this.handleEmailChange(i)}
+          value={this.state.email}
+        />
+        <TextInput
+          autoCompleteType="password"
+          style={{ height: 80, borderColor: 'gray', borderWidth: 1, padding: 0 }}
+          onChangeText={(i) => this.handlePasswordChange(i)}
+          value={this.state.password}
+        />
+        <Button
+          title="LOGIN"
+          onPress={() => this.handleSubmit()}
+        />
+        <Link to="/signup"><Text>To signup</Text></Link>
+      </View>
       // <div className={style.background}>
       //   <form
       //     className={style.form}

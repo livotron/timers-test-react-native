@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
-// import { Link } from 'react-router-dom';
+import { Text, View, TextInput, Button } from 'react-native';
+import { Link } from 'react-router-native';
 import { signup } from '../services/auth';
 
 export default class SignUp extends Component {
@@ -11,18 +11,21 @@ export default class SignUp extends Component {
       email: '',
       password: '',
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleEmailChange(inputValue) {
     this.setState({
-      [event.target.name]: event.target.value
+      email: inputValue
+    });
+  }
+
+  handlePasswordChange(inputValue) {
+    this.setState({
+      password: inputValue
     });
   }
 
   async handleSubmit(event) {
-    event.preventDefault();
     this.setState({ error: '' });
     try {
       await signup(this.state.email, this.state.password);
@@ -33,8 +36,25 @@ export default class SignUp extends Component {
   
   render() {
     return (
-      <Text>Signup !</Text>
-      // <div>
+      <View>
+        <Text>Signup</Text>
+        <TextInput
+          style={{ height: 80, borderColor: 'gray', borderWidth: 1, padding: 0 }}
+          onChangeText={(i) => this.handleEmailChange(i)}
+          value={this.state.email}
+        />
+        <TextInput
+          autoCompleteType="password"
+          style={{ height: 80, borderColor: 'gray', borderWidth: 1, padding: 0 }}
+          onChangeText={(i) => this.handlePasswordChange(i)}
+          value={this.state.password}
+        />
+        <Button
+          title="SIGNUP"
+          onPress={() => this.handleSubmit()}
+        />
+        <Link to="/login"><Text>To login</Text></Link>
+      </View>      // <div>
       //   <form onSubmit={this.handleSubmit}>
       //     <h1>
       //       Sign Up to
